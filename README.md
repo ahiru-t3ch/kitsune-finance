@@ -1,5 +1,8 @@
-# narf
-NARF for Notebook mARket Finance :fox_face:
+# Kitsune Finance :fox_face:
 
-Goal:
-Compute fiance metrics with Python
+## Presentation
+Compute fiance metrics with Python.
+
+## Metrics
+VaR
+CVaR
