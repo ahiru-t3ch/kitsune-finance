@@ -7,17 +7,28 @@ import matplotlib.ticker as mtick
 import seaborn as sns
 
 
-# --------------
-# Historical Var
-# --------------
-
-# 1 Asset
-
 def compute_var_histo(yield_series: pd.Series, trust_level: int) -> float:
+    """
+    Computer Historical VaR
+
+    :param pd.Series yield_series: Serie of the yields of portfolio
+    :param int trust_level: alpha % trust level
+    :return: VaR
+    :rtype: float
+    """
     return np.percentile(yield_series, 100 - trust_level)
 
 
 def show_var_histo_report(ticker: str, trust_level: int):
+    """
+    Prints the conclusion within Jupyter Notebook for the 1 financial product.
+    And gets data from Yahoo Finance.
+    With graphical representation of the VaR.
+
+    :param str ticker: Name of the ticker
+    :param int trust_level: alpha % trust level
+    :param pd.Series yield_series: Serie of the yields of portfolio
+    """
     dat = yf.Ticker(ticker)
     print("VaR for: " + str(dat.info['longName']))
     
@@ -41,9 +52,19 @@ def show_var_histo_report(ticker: str, trust_level: int):
     plt.gca().xaxis.set_major_formatter(mtick.PercentFormatter(xmax=1.0))
     plt.show()
 
-# N Assets
 
 def ptf_yields_returns(tickers_weights: dict, start_date: str, end_date: str) -> Tuple[pd.Series, List[str]]:
+    """
+    Computes the financial returns yields for a financial portfolio for several products.
+    The financial products are tickers used to get market informations from Yahoo Finance.
+
+    :param dict tickers_weights: Dictionary representing the Portfolio of financial products with tickers as key and the weights of each produts as value
+    :param str start_date: Start date of the period of market information
+    :param str end_date: End date of the period of market information
+    :return: Portfolio yields returns and Ticker names
+    :rtype: Tuple[pd.Series, List[str]]
+    :raises ValueError: if the Portofiol total weight is not 100%
+    """
     weights = np.array([])
     tickers_names_list = []
     
@@ -70,6 +91,14 @@ def ptf_yields_returns(tickers_weights: dict, start_date: str, end_date: str) ->
 
 
 def show_ptf_var_histo_report(names: List[str], trust_level: int, yield_series: pd.Series):
+    """
+    Prints the conclusion within Jupyter Notebook for the Portfolio.
+    With graphical representation of the VaR.
+
+    :param List[str] names: Names of the tickers in the Portfolio
+    :param int trust_level: alpha % trust level
+    :param pd.Series yield_series: Serie of the yields of portfolio
+    """
     print("VaR for Portfolio: " + " ".join(names))    
     var = compute_var_histo(yield_series, trust_level)
     
@@ -86,3 +115,15 @@ def show_ptf_var_histo_report(names: List[str], trust_level: int, yield_series: 
     plt.ylabel("Frequency")
     plt.gca().xaxis.set_major_formatter(mtick.PercentFormatter(xmax=1.0))
     plt.show()
+
+
+def compute_cvar(yield_series: pd.Series, var: float) -> float:
+    """
+    Computes CVaR according to provided VaR value.
+
+    :param pd.Series yield_series: Serie of the yields of portfolio
+    :param float var: VaR for a specific trust level alpha %
+    :return: CVaR
+    :rtype: float
+    """
+    return yield_series[yield_series <= var].mean()
