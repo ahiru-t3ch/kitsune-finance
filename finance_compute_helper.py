@@ -1,10 +1,15 @@
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import yfinance as yf
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import seaborn as sns
+
+
+# ----
+# RISK
+# ----
 
 
 def var_histo(yield_series: pd.Series, trust_level: int) -> float:
@@ -94,5 +99,3 @@ def show_ptf_var_cvar_report(names: List[str], trust_level: int, yield_series: p
     plt.ylabel("Frequency")
     plt.gca().xaxis.set_major_formatter(mtick.PercentFormatter(xmax=1.0))
     plt.show()
-
-
